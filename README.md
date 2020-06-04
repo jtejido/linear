@@ -1,2 +1,10 @@
 # linear
-Golang Port of Apache Commons Math's Linear library
+Golang port of Apache Common Math's **linear** namespace library.
+
+TO-DO:
+Bi-Diagonal Transformer
+Conjugate Gradient
+Field Vector/Matrix and visitors
+Iterative Linear Solver
+Rectangular Cholesky Decomp
+SymmLQ
