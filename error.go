@@ -223,7 +223,20 @@ func multiDimensionMismatchSimpleErrorf(wrong, expected []int) multiDimensionMis
 
 func multiDimensionMismatchErrorf(pattern string, wrong, expected []int) multiDimensionMismatchError {
 	ret := multiDimensionMismatchError{wrong: wrong, expected: expected}
-	ret.mathIllegalArgumentError = mathIllegalArgumentErrorf(pattern, wrong, expected)
+	args := make([]interface{}, len(wrong)+len(expected))
+
+	var i int
+	for i < (len(wrong) + len(expected)) {
+		if i < len(wrong) {
+			args[i] = wrong[i]
+		} else {
+			args[i] = expected[i-len(wrong)]
+
+		}
+		i++
+	}
+
+	ret.mathIllegalArgumentError = mathIllegalArgumentErrorf(pattern, args...)
 	return ret
 }
 
@@ -531,5 +544,5 @@ func (e mathError) addMsg(msg string) {
 }
 
 func mathErrorf(pattern string, arguments ...interface{}) mathError {
-	return mathError{msg: fmt.Sprintf("Math Error: "+pattern, arguments)}
+	return mathError{msg: fmt.Sprintf("Math Error: "+pattern, arguments...)}
 }
