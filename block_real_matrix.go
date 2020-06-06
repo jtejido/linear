@@ -462,32 +462,6 @@ func (brm *BlockRealMatrix) Trace() float64 {
 	return trace
 }
 
-func (brm *BlockRealMatrix) SubMatrixFromIndices(selectedRows, selectedColumns []int) RealMatrix {
-	checkSubMatrixIndexFromIndices(brm, selectedRows, selectedColumns)
-
-	subMatrix, err := NewArray2DRowRealMatrix(len(selectedRows), len(selectedColumns))
-	if err != nil {
-		panic(err)
-	}
-	drmcv := new(RealMatrixChangingVisitorImpl)
-
-	drmcv.s = func(int, int, int, int, int, int) {
-
-	}
-
-	drmcv.v = func(row, column int, value float64) float64 {
-		return brm.At(selectedRows[row], selectedColumns[column])
-	}
-
-	drmcv.e = func() float64 {
-		return 0
-	}
-
-	subMatrix.WalkInUpdateRowOrder(drmcv)
-
-	return subMatrix
-}
-
 func (brm *BlockRealMatrix) SubMatrix(startRow, endRow, startColumn, endColumn int) RealMatrix {
 	if err := checkSubMatrixIndex(brm, startRow, endRow, startColumn, endColumn); err != nil {
 		panic(err)

@@ -464,7 +464,7 @@ func (a2drrm *Array2DRowRealMatrix) OperateVector(vec RealVector) RealVector {
 	}
 
 	v := new(ArrayRealVector)
-	v.data = append([]float64{}, out...)
+	v.data = out
 	return v
 }
 
@@ -532,53 +532,6 @@ func (a2drrm *Array2DRowRealMatrix) SubMatrix(startRow, endRow, startColumn, end
 
 	subMatrix := new(Array2DRowRealMatrix)
 	subMatrix.data = outData
-	return subMatrix
-}
-
-type RealMatrixChangingVisitorImpl struct {
-	s func(int, int, int, int, int, int)
-	v func(int, int, float64) float64
-	e func() float64
-}
-
-func (drmcv *RealMatrixChangingVisitorImpl) Start(rows, columns, startRow, endRow, startColumn, endColumn int) {
-	drmcv.s(rows, columns, startRow, endRow, startColumn, endColumn)
-}
-
-func (drmcv *RealMatrixChangingVisitorImpl) Visit(row, column int, value float64) float64 {
-	return drmcv.v(row, column, value)
-}
-
-func (drmcv *RealMatrixChangingVisitorImpl) End() float64 {
-	return drmcv.e()
-}
-
-func (a2drrm *Array2DRowRealMatrix) SubMatrixFromIndices(selectedRows, selectedColumns []int) RealMatrix {
-	if err := checkSubMatrixIndexFromIndices(a2drrm, selectedRows, selectedColumns); err != nil {
-		panic(err)
-	}
-
-	subMatrix, err := NewArray2DRowRealMatrix(len(selectedRows), len(selectedColumns))
-	if err != nil {
-		panic(err)
-	}
-
-	drmcv := new(RealMatrixChangingVisitorImpl)
-
-	drmcv.s = func(int, int, int, int, int, int) {
-
-	}
-
-	drmcv.v = func(row, column int, value float64) float64 {
-		return a2drrm.At(selectedRows[row], selectedColumns[column])
-	}
-
-	drmcv.e = func() float64 {
-		return 0
-	}
-
-	subMatrix.WalkInUpdateRowOrder(drmcv)
-
 	return subMatrix
 }
 

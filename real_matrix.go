@@ -82,10 +82,7 @@ type RealMatrix interface {
 	 * counting from 0 to n-1.
 	 */
 	SubMatrix(startRow, endRow, startColumn, endColumn int) RealMatrix
-	/**
-	 * Gets a submatrix. Rows and columns are indicated counting from 0 to n-1.
-	 */
-	SubMatrixFromIndices(selectedRows, selectedColumns []int) RealMatrix
+
 	/**
 	 * Replace the submatrix starting at row, column using data in the
 	 * input subMatrix array. Indexes are 0-based.
@@ -103,80 +100,96 @@ type RealMatrix interface {
 	 * 9  5  6  2
 	 */
 	SetSubMatrix(subMatrix [][]float64, row, column int)
+
 	/**
 	 * Get the entries at the given row index as a row matrix.  Row indices start
 	 * at 0.
 	 */
 	RowMatrixAt(row int) RealMatrix
+
 	/**
 	 * Sets the specified row of this matrix to the entries of
 	 * the specified row matrix. Row indices start at 0.
 	 */
 	SetRowMatrix(row int, matrix RealMatrix)
+
 	/**
 	 * Get the entries at the given column index as a column matrix. Column
 	 * indices start at 0.
 	 */
 	ColumnMatrixAt(column int) RealMatrix
+
 	/**
 	 * Sets the specified column of this matrix to the entries
 	 * of the specified column matrix. Column indices start at 0.
 	 */
 	SetColumnMatrix(column int, matrix RealMatrix)
+
 	/**
 	 * Returns the entries at the given row index as a Row indices
 	 * start at 0.
 	 */
 	RowVectorAt(row int) RealVector
+
 	/**
 	 * Sets the specified row of this matrix to the entries of
 	 * the specified vector. Row indices start at 0.
 	 */
 	SetRowVector(row int, vector RealVector)
+
 	/**
 	 * Get the entries at the given column index as a  Column indices
 	 * start at 0.
 	 */
 	ColumnVectorAt(column int) RealVector
+
 	/**
 	 * Sets the specified column of this matrix to the entries
 	 * of the specified vector. Column indices start at 0.
 	 */
 	SetColumnVector(column int, vector RealVector)
+
 	/**
 	 * Get the entries at the given row index. Row indices start at 0.
 	 */
 	RowAt(row int) []float64
+
 	/**
 	 * Sets the specified row of this matrix to the entries
 	 * of the specified array. Row indices start at 0.
 	 */
 	SetRow(row int, array []float64)
+
 	/**
 	 * Get the entries at the given column index as an array. Column indices
 	 * start at 0.
 	 */
 	ColumnAt(column int) []float64
+
 	/**
 	 * Sets the specified column of this matrix to the entries
 	 * of the specified array. Column indices start at 0.
 	 */
 	SetColumn(column int, array []float64)
+
 	/**
 	 * Get the entry in the specified row and column. Row and column indices
 	 * start at 0.
 	 */
 	At(row, column int) float64
+
 	/**
 	 * Set the entry in the specified row and column. Row and column indices
 	 * start at 0.
 	 */
 	SetEntry(row, column int, value float64)
+
 	/**
 	 * Adds (in place) the specified value to the specified entry of
 	 * this matrix. Row and column indices start at 0.
 	 */
 	AddToEntry(row, column int, increment float64)
+
 	/**
 	 * Multiplies (in place) the specified entry of this matrix by the
 	 * specified value. Row and column indices start at 0.
@@ -186,10 +199,12 @@ type RealMatrix interface {
 	 * Returns the transpose of this matrix.
 	 */
 	Transpose() RealMatrix
+
 	/**
 	 * Returns the  trace of the matrix (the sum of the elements on the main diagonal).
 	 */
 	Trace() float64
+
 	/**
 	 * Returns the result of multiplying this by the slice v.
 	 */
@@ -199,10 +214,12 @@ type RealMatrix interface {
 	 * Returns the result of multiplying this by the vector v.
 	 */
 	OperateVector(v RealVector) RealVector
+
 	/**
 	 * Returns the (row) vector result of premultiplying this by the slice v.
 	 */
 	PreMultiply(v []float64) []float64
+
 	/**
 	 * Returns the (row) vector result of premultiplying this by the vector v.
 	 *
@@ -424,6 +441,39 @@ func CopySubMatrixFromIndices(m RealMatrix, selectedRows, selectedColumns []int,
 			destinationI[j] = m.At(selectedRows[i], selectedColumns[j])
 		}
 	}
+}
+
+type realMatrixChangingVisitorImpl struct {
+	v func(int, int, float64) float64
+}
+
+func (drmcv realMatrixChangingVisitorImpl) Start(rows, columns, startRow, endRow, startColumn, endColumn int) {
+}
+
+func (drmcv realMatrixChangingVisitorImpl) Visit(row, column int, value float64) float64 {
+	return drmcv.v(row, column, value)
+}
+
+func (drmcv realMatrixChangingVisitorImpl) End() float64 { return 0 }
+
+/**
+ * Gets a submatrix. Rows and columns are indicated counting from 0 to n-1.
+ */
+func SubMatrix(m RealMatrix, selectedRows, selectedColumns []int) RealMatrix {
+	checkSubMatrixIndexFromIndices(m, selectedRows, selectedColumns)
+
+	subMatrix, err := NewRealMatrixWithDimension(len(selectedRows), len(selectedColumns))
+	if err != nil {
+		panic(err)
+	}
+
+	var drmcv realMatrixChangingVisitorImpl
+	drmcv.v = func(row, column int, value float64) float64 {
+		return m.At(selectedRows[row], selectedColumns[column])
+	}
+
+	subMatrix.WalkInUpdateRowOrder(drmcv)
+	return subMatrix
 }
 
 /**

@@ -607,37 +607,6 @@ func (dm *DiagonalMatrix) SubMatrix(startRow, endRow, startColumn, endColumn int
 	return subMatrix
 }
 
-func (dm *DiagonalMatrix) SubMatrixFromIndices(selectedRows, selectedColumns []int) RealMatrix {
-	if err := checkSubMatrixIndexFromIndices(dm, selectedRows, selectedColumns); err != nil {
-		panic(err)
-	}
-	if len(selectedRows) != len(selectedColumns) {
-		panic(dimensionsMismatchSimpleErrorf(len(selectedRows), len(selectedColumns)))
-	}
-
-	subMatrix, err := NewDiagonalMatrixWithDimension(len(selectedRows))
-	if err != nil {
-		panic(err)
-	}
-	drmcv := new(RealMatrixChangingVisitorImpl)
-
-	drmcv.s = func(int, int, int, int, int, int) {
-
-	}
-
-	drmcv.v = func(row, column int, value float64) float64 {
-		return dm.At(selectedRows[row], selectedColumns[column])
-	}
-
-	drmcv.e = func() float64 {
-		return 0
-	}
-
-	subMatrix.WalkInUpdateRowOrder(drmcv)
-
-	return subMatrix
-}
-
 func (dm *DiagonalMatrix) Trace() float64 {
 	nRows := dm.RowDimension()
 	nCols := dm.ColumnDimension()

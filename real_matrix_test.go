@@ -150,7 +150,7 @@ func checkSubMatrix(t *testing.T, m RealMatrix, reference [][]float64, startRow,
 
 func checkSubMatrixFromIndices(t *testing.T, m RealMatrix, reference [][]float64, selectedRows, selectedColumns []int) {
 	if reference != nil {
-		sub := m.SubMatrixFromIndices(selectedRows, selectedColumns)
+		sub := SubMatrix(m, selectedRows, selectedColumns)
 
 		if !createBlockRealMatrixFromSlices(t, reference).Equals(sub) {
 			t.Errorf("Mismatch. submatrix not equal reference mat. want: true, got: false")
@@ -161,7 +161,7 @@ func checkSubMatrixFromIndices(t *testing.T, m RealMatrix, reference [][]float64
 				t.Errorf("panic expected.")
 			}
 		}()
-		m.SubMatrixFromIndices(selectedRows, selectedColumns)
+		SubMatrix(m, selectedRows, selectedColumns)
 	}
 
 }
