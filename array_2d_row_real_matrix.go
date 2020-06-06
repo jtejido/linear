@@ -106,7 +106,7 @@ func (a2drrm *Array2DRowRealMatrix) Add(mat RealMatrix) RealMatrix {
 	}
 
 	m := new(Array2DRowRealMatrix)
-	m.copyIn(outData)
+	m.data = outData
 	return m
 }
 
@@ -146,7 +146,7 @@ func (a2drrm *Array2DRowRealMatrix) Subtract(mat RealMatrix) RealMatrix {
 	}
 
 	m := new(Array2DRowRealMatrix)
-	m.copyIn(outData)
+	m.data = outData
 	return m
 }
 
@@ -164,21 +164,21 @@ func (a2drrm *Array2DRowRealMatrix) Multiply(mat RealMatrix) RealMatrix {
 
 		outData = make([][]float64, nRows)
 		mCol := make([]float64, nSum)
-		mData := m.data
+
 		for col := 0; col < nCols; col++ {
 			for mRow := 0; mRow < nSum; mRow++ {
-				mCol[mRow] = mData[mRow][col]
+				mCol[mRow] = m.data[mRow][col]
 			}
 
 			for row := 0; row < nRows; row++ {
-				dataRow := a2drrm.data[row]
 				var sum float64
 				for i := 0; i < nSum; i++ {
-					sum += dataRow[i] * mCol[i]
+					sum += a2drrm.data[row][i] * mCol[i]
 				}
 				if outData[row] == nil {
 					outData[row] = make([]float64, nCols)
 				}
+
 				outData[row][col] = sum
 			}
 		}
@@ -204,7 +204,7 @@ func (a2drrm *Array2DRowRealMatrix) Multiply(mat RealMatrix) RealMatrix {
 	}
 
 	m := new(Array2DRowRealMatrix)
-	m.copyIn(outData)
+	m.data = outData
 	return m
 }
 
@@ -221,7 +221,7 @@ func (a2drrm *Array2DRowRealMatrix) ScalarAdd(d float64) RealMatrix {
 	}
 
 	mat := new(Array2DRowRealMatrix)
-	mat.copyIn(outData)
+	mat.data = outData
 	return mat
 }
 
@@ -238,7 +238,7 @@ func (a2drrm *Array2DRowRealMatrix) ScalarMultiply(d float64) RealMatrix {
 	}
 
 	mat := new(Array2DRowRealMatrix)
-	mat.copyIn(outData)
+	mat.data = outData
 	return mat
 }
 
