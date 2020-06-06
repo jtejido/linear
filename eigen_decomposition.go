@@ -76,7 +76,7 @@ type EigenDecomposition struct {
 func NewEigenDecomposition(matrix RealMatrix) (*EigenDecomposition, error) {
 	ans := new(EigenDecomposition)
 	symTol := 10. * float64(matrix.RowDimension()) * float64(matrix.ColumnDimension()) * doubleeps
-	ans.isSymmetric = IsSymmetric(matrix, symTol)
+	ans.isSymmetric = isSymmetric(matrix, symTol)
 	if ans.isSymmetric {
 		if err := ans.transformToTridiagonal(matrix); err != nil {
 			return nil, err
@@ -211,7 +211,7 @@ func (ed *EigenDecomposition) VT() RealMatrix {
  */
 func (ed *EigenDecomposition) HasComplexEigenvalues() bool {
 	for i := 0; i < len(ed.imagEigenvalues); i++ {
-		if !EqualsWithError(ed.imagEigenvalues[i], 0.0, eps_ed) {
+		if !equalsWithError(ed.imagEigenvalues[i], 0.0, eps_ed) {
 			return true
 		}
 	}
@@ -504,7 +504,7 @@ func (ed *EigenDecomposition) transformToSchur(matrix RealMatrix) (*SchurTransfo
 	ed.imagEigenvalues = make([]float64, len(matT))
 
 	for i := 0; i < len(ed.realEigenvalues); i++ {
-		if i == (len(ed.realEigenvalues)-1) || EqualsWithError(matT[i+1][i], 0.0, eps_ed) {
+		if i == (len(ed.realEigenvalues)-1) || equalsWithError(matT[i+1][i], 0.0, eps_ed) {
 			ed.realEigenvalues[i] = matT[i][i]
 		} else {
 			x := matT[i+1][i+1]
@@ -538,7 +538,7 @@ func (ed *EigenDecomposition) findEigenVectorsFromSchur(schur *SchurTransformer)
 	}
 
 	// we can not handle a matrix with zero norm
-	if EqualsWithError(norm, 0.0, eps_ed) {
+	if equalsWithError(norm, 0.0, eps_ed) {
 		return mathArithmeticErrorf(zero_norm)
 	}
 
@@ -550,7 +550,7 @@ func (ed *EigenDecomposition) findEigenVectorsFromSchur(schur *SchurTransformer)
 		p := ed.realEigenvalues[idx]
 		q := ed.imagEigenvalues[idx]
 
-		if Equals(q, 0.0) {
+		if equals(q, 0.0) {
 			// Real vector
 			l := idx
 			matrixT[idx][idx] = 1.0
@@ -565,7 +565,7 @@ func (ed *EigenDecomposition) findEigenVectorsFromSchur(schur *SchurTransformer)
 					s = r
 				} else {
 					l = i
-					if Equals(ed.imagEigenvalues[i], 0.0) {
+					if equals(ed.imagEigenvalues[i], 0.0) {
 						if w != 0.0 {
 							matrixT[i][idx] = -r / w
 						} else {
@@ -626,7 +626,7 @@ func (ed *EigenDecomposition) findEigenVectorsFromSchur(schur *SchurTransformer)
 					s = sa
 				} else {
 					l = i
-					if Equals(ed.imagEigenvalues[i], 0.0) {
+					if equals(ed.imagEigenvalues[i], 0.0) {
 						c := complex(-ra, -sa) / complex(w, q)
 						matrixT[i][idx-1] = real(c)
 						matrixT[i][idx] = imag(c)
@@ -636,7 +636,7 @@ func (ed *EigenDecomposition) findEigenVectorsFromSchur(schur *SchurTransformer)
 						y := matrixT[i+1][i]
 						vr := (ed.realEigenvalues[i]-p)*(ed.realEigenvalues[i]-p) + ed.imagEigenvalues[i]*ed.imagEigenvalues[i] - q*q
 						vi := (ed.realEigenvalues[i] - p) * 2.0 * q
-						if Equals(vr, 0.0) && Equals(vi, 0.0) {
+						if equals(vr, 0.0) && equals(vi, 0.0) {
 							vr = doubleeps * norm * (math.Abs(w) + math.Abs(q) + math.Abs(x) + math.Abs(y) + math.Abs(z))
 						}
 						c := complex(x*r-z*ra+q*sa, x*s-z*sa-q*ra) / complex(vr, vi)
@@ -722,7 +722,7 @@ func (s *eigenDecompositionSolver) IsNonSingular() bool {
 	for i := 0; i < len(s.ed.realEigenvalues); i++ {
 		// Looking for eigenvalues that are 0, where we consider anything much much smaller
 		// than the largest eigenvalue to be effectively 0.
-		if EqualsWithError(s.eigenvalueNormAt(i)/largestEigenvalueNorm, 0, eps_ed) {
+		if equalsWithError(s.eigenvalueNormAt(i)/largestEigenvalueNorm, 0, eps_ed) {
 			return false
 		}
 	}

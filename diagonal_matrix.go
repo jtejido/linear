@@ -226,7 +226,7 @@ func (dm *DiagonalMatrix) AddToEntry(row, column int, increment float64) {
 }
 
 func (dm *DiagonalMatrix) ensureZero(value float64) error {
-	if !EqualsWithULP(0.0, value, 1) {
+	if !equalsWithULP(0.0, value, 1) {
 		return numberIsTooLargeBoundedErrorf(math.Abs(value), 0, true)
 	}
 
@@ -329,7 +329,7 @@ func (dm *DiagonalMatrix) InverseWithThreshold(threshold float64) *DiagonalMatri
 
 func (dm *DiagonalMatrix) IsSingular(threshold float64) bool {
 	for i := 0; i < len(dm.data); i++ {
-		if EqualsWithError(dm.data[i], 0.0, threshold) {
+		if equalsWithError(dm.data[i], 0.0, threshold) {
 			return true
 		}
 	}

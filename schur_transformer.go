@@ -317,7 +317,7 @@ func (st *SchurTransformer) performDoubleQRStep(il, im, iu int, shift *ShiftInfo
 			}
 
 			shift.x = math.Abs(p) + math.Abs(q) + math.Abs(r)
-			if EqualsWithError(shift.x, 0.0, doubleeps) {
+			if equalsWithError(shift.x, 0.0, doubleeps) {
 				continue
 			}
 			p /= shift.x

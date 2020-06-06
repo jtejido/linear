@@ -181,7 +181,7 @@ func (hs *HessenbergTransformer) transform() {
 			scale += math.Abs(hs.householderVectors[i][m-1])
 		}
 
-		if !Equals(scale, 0) {
+		if !equals(scale, 0) {
 			// Compute Householder transformation.
 			h := 0.
 			for i := high; i >= m; i-- {

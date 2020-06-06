@@ -65,11 +65,11 @@ func TestEigenDecompositionSolverInvertibleTinyValues(t *testing.T) {
 	for i := 0; i < m.RowDimension(); i++ {
 		for j := 0; j < m.ColumnDimension(); j++ {
 			if i == j {
-				if !EqualsWithError(1, id.At(i, j), 1e-15) {
+				if !equalsWithError(1, id.At(i, j), 1e-15) {
 					t.Errorf("Mismatch. want: %v, got: %v", 1, id.At(i, j))
 				}
 			} else {
-				if !EqualsWithError(0, id.At(i, j), 1e-15) {
+				if !equalsWithError(0, id.At(i, j), 1e-15) {
 					t.Errorf("Mismatch. want: %v, got: %v", 1, id.At(i, j))
 				}
 			}

@@ -32,7 +32,7 @@ var (
 	negative_zero_float64_bits         = math.Float64bits(negative_zero_float64)
 )
 
-func isSymmetric(matrix RealMatrix, relativeTolerance float64, raiseException bool) bool {
+func _isSymmetric(matrix RealMatrix, relativeTolerance float64, raiseException bool) bool {
 	rows := matrix.RowDimension()
 	if rows != matrix.ColumnDimension() {
 		if raiseException {
@@ -58,12 +58,12 @@ func isSymmetric(matrix RealMatrix, relativeTolerance float64, raiseException bo
 	return true
 }
 
-func IsSymmetric(matrix RealMatrix, eps float64) bool {
-	return isSymmetric(matrix, eps, false)
+func isSymmetric(matrix RealMatrix, eps float64) bool {
+	return _isSymmetric(matrix, eps, false)
 }
 
 func compareTo(x, y, eps float64) int {
-	if EqualsWithError(x, y, eps) {
+	if equalsWithError(x, y, eps) {
 		return 0
 	} else if x < y {
 		return -1
@@ -71,15 +71,15 @@ func compareTo(x, y, eps float64) int {
 	return 1
 }
 
-func Equals(x, y float64) bool {
-	return EqualsWithULP(x, y, 1)
+func equals(x, y float64) bool {
+	return equalsWithULP(x, y, 1)
 }
 
-func EqualsWithError(x, y, eps float64) bool {
-	return EqualsWithULP(x, y, 1) || math.Abs(y-x) <= eps
+func equalsWithError(x, y, eps float64) bool {
+	return equalsWithULP(x, y, 1) || math.Abs(y-x) <= eps
 }
 
-func EqualsWithULP(x, y float64, maxUlps int) bool {
+func equalsWithULP(x, y float64, maxUlps int) bool {
 
 	xInt := math.Float64bits(x)
 	yInt := math.Float64bits(y)
