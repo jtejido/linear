@@ -6,7 +6,7 @@ import (
 )
 
 func createArray2DRowRealMatrixFromSlices(t *testing.T, data [][]float64) *Array2DRowRealMatrix {
-	m, err := NewArray2DRowRealMatrixFromSlices(data)
+	m, err := NewArray2DRowRealMatrixFromSlices(data, true)
 
 	if err != nil {
 		t.Errorf("Error while creating Matrix %s", err)

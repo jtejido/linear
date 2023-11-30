@@ -37,9 +37,30 @@ func NewArray2DRowRealMatrix(rowDimension, columnDimension int) (*Array2DRowReal
 	return &Array2DRowRealMatrix{data: data}, nil
 }
 
-func NewArray2DRowRealMatrixFromSlices(data [][]float64) (*Array2DRowRealMatrix, error) {
+func NewArray2DRowRealMatrixFromSlices(data [][]float64, copyArray bool) (*Array2DRowRealMatrix, error) {
 	ans := new(Array2DRowRealMatrix)
-	ans.copyIn(data)
+	if copyArray {
+		ans.copyIn(data)
+	} else {
+		if data == nil {
+			return nil, invalidArgumentSimpleErrorf()
+		}
+		nRows := len(data)
+		if nRows == 0 {
+			return nil, noDataErrorf(at_least_one_row)
+		}
+		nCols := len(data[0])
+		if nCols == 0 {
+			return nil, noDataErrorf(at_least_one_column)
+		}
+		for r := 1; r < nRows; r++ {
+			if len(data[r]) != nCols {
+				return nil, dimensionsMismatchSimpleErrorf(len(data[r]), nCols)
+			}
+		}
+		ans.data = data
+	}
+
 	return ans, nil
 }
 

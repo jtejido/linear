@@ -577,7 +577,7 @@ func (svd *SingularValueDecomposition) Covariance(minSingularValue float64) Real
 
 	svd.VT().WalkInOptimizedOrderBounded(t, 0, dimension-1, 0, p-1)
 
-	jv, err := NewArray2DRowRealMatrixFromSlices(data)
+	jv, err := NewArray2DRowRealMatrixFromSlices(data, true)
 	if err != nil {
 		panic(err)
 	}
@@ -654,7 +654,7 @@ func newSVDecompositionSolver(svd *SingularValueDecomposition) *svDecompositionS
 		}
 	}
 
-	mat, err := NewArray2DRowRealMatrixFromSlices(suT)
+	mat, err := NewArray2DRowRealMatrixFromSlices(suT, true)
 	if err != nil {
 		panic(err)
 	}

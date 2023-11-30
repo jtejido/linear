@@ -338,7 +338,7 @@ func NewRealMatrixFromSlices(data [][]float64) (RealMatrix, error) {
 	}
 
 	if len(data)*len(data[0]) <= 4096 {
-		return NewArray2DRowRealMatrixFromSlices(data)
+		return NewArray2DRowRealMatrixFromSlices(data, true)
 	}
 
 	return NewBlockRealMatrixFromSlices(data)

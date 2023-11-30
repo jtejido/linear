@@ -4,6 +4,24 @@ import (
 	"math"
 )
 
+/**
+ * Calculates the rectangular Cholesky decomposition of a matrix.
+ * <p>The rectangular Cholesky decomposition of a real symmetric positive
+ * semidefinite matrix A consists of a rectangular matrix B with the same
+ * number of rows such that: A is almost equal to BB<sup>T</sup>, depending
+ * on a user-defined tolerance. In a sense, this is the square root of A.</p>
+ * <p>The difference with respect to the regular {@link CholeskyDecomposition}
+ * is that rows/columns may be permuted (hence the rectangular shape instead
+ * of the traditional triangular shape) and there is a threshold to ignore
+ * small diagonal elements. This is used for example to generate {@link
+ * org.apache.commons.math4.random.CorrelatedRandomVectorGenerator correlated
+ * random n-dimensions vectors} in a p-dimension subspace (p &lt; n).
+ * In other words, it allows generating random vectors from a covariance
+ * matrix that is only positive semidefinite, and not positive definite.</p>
+ * <p>Rectangular Cholesky decomposition is <em>not</em> suited for solving
+ * linear systems, so it does not provide any {@link DecompositionSolver
+ * decomposition solver}.</p>
+ */
 type RectangularCholeskyDecomposition struct {
 	root RealMatrix
 	rank int

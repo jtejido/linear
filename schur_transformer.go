@@ -24,6 +24,18 @@ var (
 	max_iter_st = 100
 )
 
+/**
+ * Class transforming a general real matrix to Schur form.
+ * <p>A m &times; m matrix A can be written as the product of three matrices: A = P
+ * &times; T &times; P<sup>T</sup> with P an orthogonal matrix and T an quasi-triangular
+ * matrix. Both P and T are m &times; m matrices.</p>
+ * <p>Transformation to Schur form is often not a goal by itself, but it is an
+ * intermediate step in more general decomposition algorithms like
+ * {@link EigenDecomposition eigen decomposition}. This class is therefore
+ * intended for internal use by the library and is not public. As a consequence
+ * of this explicitly limited scope, many methods directly returns references to
+ * internal arrays, not copies.</p>
+ */
 type SchurTransformer struct {
 	matrixP, matrixT           [][]float64
 	cachedP, cachedT, cachedPt RealMatrix

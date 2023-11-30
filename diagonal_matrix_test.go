@@ -319,7 +319,7 @@ func TestDiagonalMatrixPreMultiply(t *testing.T) {
 func TestDiagonalMatrixPreMultiplyVector(t *testing.T) {
 	data := []float64{-1.2, 3.4, 5}
 	diag, _ := NewDiagonalMatrixFromSlice(data)
-	dense, _ := NewArray2DRowRealMatrixFromSlices(diag.Data())
+	dense, _ := NewArray2DRowRealMatrixFromSlices(diag.Data(), true)
 
 	v := []float64{6.7, 890.1, 23.4}
 	vector := createRealVector(t, v)
